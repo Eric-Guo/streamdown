@@ -145,5 +145,51 @@ export const parseMarkdownIntoBlocks = (markdown: string): string[] => {
     mergedBlocks.push(currentBlock);
   }
 
-  return mergedBlocks;
+  // Additional post-process: keep custom HTML tags like <think>/<summary> together across blocks
+  // This prevents unintended closure or splitting when a newline arrives mid-tag content
+  const mergeBlocksByTags = (
+    inputBlocks: string[],
+    tagNames: string[]
+  ): string[] => {
+    const result: string[] = [];
+    let buffer = "";
+    const balance: Record<string, number> = {};
+    for (const name of tagNames) balance[name] = 0;
+
+    const hasOpen = (): boolean => tagNames.some((n) => balance[n] > 0);
+
+    const updateBalance = (text: string): void => {
+      for (const name of tagNames) {
+        const openRe = new RegExp(`<\\s*${name}\\b[^>]*>`, "gi");
+        const closeRe = new RegExp(`<\\/\\s*${name}\\s*>`, "gi");
+        const opens = (text.match(openRe) || []).length;
+        const closes = (text.match(closeRe) || []).length;
+        balance[name] += opens - closes;
+      }
+    };
+
+    for (const block of inputBlocks) {
+      if (!hasOpen()) {
+        buffer = block;
+        updateBalance(block);
+        if (!hasOpen()) {
+          result.push(buffer);
+          buffer = "";
+        }
+      } else {
+        buffer += block;
+        updateBalance(block);
+        if (!hasOpen()) {
+          result.push(buffer);
+          buffer = "";
+        }
+      }
+    }
+
+    if (buffer) result.push(buffer);
+    return result;
+  };
+
+  const finalBlocks = mergeBlocksByTags(mergedBlocks, ["think", "summary"]);
+  return finalBlocks;
 };
