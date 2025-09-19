@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@mixtint/streamdown": "workspace:*",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-tabs": "^1.1.13",
@@ -23,7 +24,6 @@
     "react-dom": "^19.1.1",
     "react-markdown": "^10.1.0",
     "shiki": "^3.12.2",
-    "streamdown": "workspace:*",
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
