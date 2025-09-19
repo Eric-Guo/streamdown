@@ -1,6 +1,9 @@
 {
-  "name": "streamdown",
-  "version": "1.6.10",
+  "name": "@mixtint/streamdown",
+  "version": "1.6.20",
+  "publishConfig": {
+    "access": "public"
+  },  
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
