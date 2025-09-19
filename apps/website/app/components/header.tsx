@@ -1,12 +1,12 @@
 import type { SVGProps } from "react";
 import { Installer } from "./installer";
 
-const Vercel = (props: SVGProps<SVGSVGElement>) => (
+const Vercel = ({ className }: SVGProps<SVGSVGElement>) => (
   <svg
+    className={className}
     fill="none"
     viewBox="0 0 76 65"
     xmlns="http://www.w3.org/2000/svg"
-    {...props}
   >
     <title>Vercel</title>
     <path d="M37.5274 0L75.0548 65H0L37.5274 0Z" fill="currentColor" />

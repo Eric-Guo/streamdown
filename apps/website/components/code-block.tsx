@@ -1,19 +1,12 @@
 "use client";
 
 import { CheckIcon, CopyIcon } from "lucide-react";
-import {
-  type ComponentProps,
-  createContext,
-  type HTMLAttributes,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import type { JSX } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { type BundledLanguage, codeToHtml } from "shiki";
 import { cn } from "@/lib/utils";
 
-type CodeBlockProps = HTMLAttributes<HTMLDivElement> & {
+type CodeBlockProps = JSX.IntrinsicElements["div"] & {
   code: string;
   language: BundledLanguage;
 };
@@ -91,7 +84,7 @@ export const CodeBlock = ({
   );
 };
 
-export type CodeBlockCopyButtonProps = ComponentProps<"button"> & {
+export type CodeBlockCopyButtonProps = JSX.IntrinsicElements["button"] & {
   onCopy?: () => void;
   onError?: (error: Error) => void;
   timeout?: number;
