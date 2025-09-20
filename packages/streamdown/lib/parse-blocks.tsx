@@ -145,7 +145,7 @@ export const parseMarkdownIntoBlocks = (markdown: string): string[] => {
     mergedBlocks.push(currentBlock);
   }
 
-  // Additional post-process: keep custom HTML tags like <think>/<summary> together across blocks
+  // Additional post-process: keep custom HTML tags like <think> together across blocks
   // This prevents unintended closure or splitting when a newline arrives mid-tag content
   const mergeBlocksByTags = (
     inputBlocks: string[],
@@ -190,6 +190,15 @@ export const parseMarkdownIntoBlocks = (markdown: string): string[] => {
     return result;
   };
 
-  const finalBlocks = mergeBlocksByTags(mergedBlocks, ["think", "summary"]);
-  return finalBlocks;
+  const finalBlocks = mergeBlocksByTags(mergedBlocks, ["think"]);
+
+  // Convert <think>...</think> to <summary>...</summary> while preserving attributes
+  const replaceThinkWithSummary = (html: string): string => {
+    const openTag = /<\s*think\b([^>]*)>/gi;
+    const closeTag = /<\s*\/\s*think\s*>/gi;
+    return html.replace(openTag, "<summary$1>").replace(closeTag, "</summary>");
+  };
+
+  const replacedBlocks = finalBlocks.map(replaceThinkWithSummary);
+  return replacedBlocks;
 };
