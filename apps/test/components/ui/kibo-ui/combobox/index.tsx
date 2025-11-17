@@ -248,7 +248,7 @@ export const ComboboxItem = (props: ComboboxItemProps) => {
 
   return (
     <CommandItem
-      onSelect={(currentValue) => {
+      onSelect={(currentValue: string) => {
         onValueChange(currentValue);
         onOpenChange(false);
       }}
