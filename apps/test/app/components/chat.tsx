@@ -44,21 +44,25 @@ export const Chat = ({ models }: ChatProps) => {
                 {message.role === "user" ? "User: " : "AI: "}
               </span>
               {message.parts.map((part, index) => {
-                const key = `${part.type}-${index}-${part.type === "file" ? part.url : (part.text?.slice(0, 50) ?? "")}`;
                 switch (part.type) {
-                  case "text":
+                  case "text": {
+                    const key = `text-${index}-${part.text?.slice(0, 50) ?? ""}`;
                     return (
                       <pre className="whitespace-pre-wrap" key={key}>
                         {part.text}
                       </pre>
                     );
-                  case "reasoning":
+                  }
+                  case "reasoning": {
+                    const key = `reasoning-${index}-${part.text?.slice(0, 50) ?? ""}`;
                     return (
                       <pre className="italic" key={key}>
                         {part.text}
                       </pre>
                     );
-                  case "file":
+                  }
+                  case "file": {
+                    const key = `file-${index}-${part.url ?? index}`;
                     return (
                       <div key={key}>
                         {part.mediaType.startsWith("image") ? (
@@ -74,6 +78,7 @@ export const Chat = ({ models }: ChatProps) => {
                         )}
                       </div>
                     );
+                  }
                   default:
                     return null;
                 }
@@ -88,9 +93,9 @@ export const Chat = ({ models }: ChatProps) => {
                 {message.role === "user" ? "User: " : "AI: "}
               </span>
               {message.parts.map((part, index) => {
-                const key = `${part.type}-${index}-${part.type === "file" ? part.url : (part.text?.slice(0, 50) ?? "")}`;
                 switch (part.type) {
-                  case "text":
+                  case "text": {
+                    const key = `text-${index}-${part.text?.slice(0, 50) ?? ""}`;
                     return (
                       <Streamdown
                         isAnimating={status === "streaming"}
@@ -99,13 +104,17 @@ export const Chat = ({ models }: ChatProps) => {
                         {part.text}
                       </Streamdown>
                     );
-                  case "reasoning":
+                  }
+                  case "reasoning": {
+                    const key = `reasoning-${index}-${part.text?.slice(0, 50) ?? ""}`;
                     return (
                       <p className="italic" key={key}>
                         {part.text}
                       </p>
                     );
-                  case "file":
+                  }
+                  case "file": {
+                    const key = `file-${index}-${part.url ?? index}`;
                     return (
                       <div key={key}>
                         {part.mediaType.startsWith("image") ? (
@@ -121,6 +130,7 @@ export const Chat = ({ models }: ChatProps) => {
                         )}
                       </div>
                     );
+                  }
                   default:
                     return null;
                 }
