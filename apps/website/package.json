@@ -9,13 +9,13 @@
     "postinstall": "fumadocs-mdx"
   },
   "dependencies": {
-    "@ai-sdk/react": "^2.0.100",
+    "@ai-sdk/react": "^2.0.102",
     "@hookform/resolvers": "^5.2.2",
     "@icons-pack/react-simple-icons": "^13.8.0",
     "@mixtint/streamdown": "workspace:*",
     "@vercel/analytics": "^1.5.0",
     "@vercel/speed-insights": "^1.2.0",
-    "ai": "^5.0.100",
+    "ai": "^5.0.102",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
@@ -38,7 +38,7 @@
     "octokit": "^5.0.5",
     "radix-ui": "^1.4.3",
     "react": "^19.2.0",
-    "react-day-picker": "^9.11.1",
+    "react-day-picker": "^9.11.2",
     "react-dom": "^19.2.0",
     "react-hook-form": "^7.66.1",
     "react-markdown": "^10.1.0",
@@ -53,13 +53,13 @@
     "tailwind-merge": "^3.4.0",
     "use-stick-to-bottom": "^1.1.1",
     "vaul": "^1.1.2",
-    "zod": "^4.1.12"
+    "zod": "^4.1.13"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.17",
     "@types/mdx": "^2.0.13",
     "@types/node": "^24.10.1",
-    "@types/react": "^19.2.6",
+    "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.17",
