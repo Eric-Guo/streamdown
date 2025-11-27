@@ -7,6 +7,9 @@ import { ECharts } from "../lib/echarts";
 import { EChartsDownloadDropdown } from "../lib/echarts/download-button";
 import { EChartsFullscreenButton } from "../lib/echarts/fullscreen-button";
 
+let clientWidth = 800;
+let clientHeight = 600;
+
 const { saveMock } = vi.hoisted(() => ({
   saveMock: vi.fn(),
 }));
@@ -60,6 +63,20 @@ vi.mock("../lib/echarts/utils", () => ({
 }));
 
 beforeAll(() => {
+  Object.defineProperty(HTMLElement.prototype, "clientWidth", {
+    configurable: true,
+    get() {
+      return clientWidth;
+    },
+  });
+
+  Object.defineProperty(HTMLElement.prototype, "clientHeight", {
+    configurable: true,
+    get() {
+      return clientHeight;
+    },
+  });
+
   // @ts-expect-error - JSDOM doesn't include ResizeObserver by default
   global.ResizeObserver = class {
     disconnect() {}
@@ -76,6 +93,8 @@ beforeEach(() => {
   saveMock.mockClear();
   loadEChartsMock.mockClear();
   document.body.style.overflow = "";
+  clientWidth = 800;
+  clientHeight = 600;
 });
 
 describe("ECharts", () => {
@@ -116,6 +135,30 @@ describe("ECharts", () => {
       '[aria-label="ECharts chart"]'
     );
     expect(chartContainer).toBeTruthy();
+  });
+
+  it("waits for container dimensions before initializing chart", async () => {
+    clientWidth = 0;
+    clientHeight = 0;
+
+    await act(async () => {
+      renderWithContext(<ECharts option='{"series":[{}]}' />);
+    });
+
+    expect(loadEChartsMock).not.toHaveBeenCalled();
+
+    clientWidth = 640;
+    clientHeight = 480;
+
+    await act(async () => {
+      window.dispatchEvent(new Event("resize"));
+    });
+
+    await waitFor(() => {
+      expect(loadEChartsMock).toHaveBeenCalledTimes(1);
+      expect(initMock).toHaveBeenCalledTimes(1);
+      expect(chartMock.setOption).toHaveBeenCalledTimes(1);
+    });
   });
 
   it("accepts function values in option string", async () => {
