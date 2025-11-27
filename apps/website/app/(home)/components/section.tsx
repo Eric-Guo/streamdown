@@ -15,6 +15,7 @@ type SectionProps = {
   markdown: string;
   streamdownProps?: StreamdownProps;
   speed?: number;
+  streamdownLoadingFallback?: string;
 };
 
 export const Section = ({
@@ -23,6 +24,7 @@ export const Section = ({
   markdown,
   streamdownProps,
   speed = DEFAULT_SPEED,
+  streamdownLoadingFallback,
 }: SectionProps) => {
   const [content, setContent] = useState("");
   const [isAnimating, setIsAnimating] = useState(false);
@@ -74,6 +76,11 @@ export const Section = ({
     };
   }, [speed, tokens, isInView, resetTrigger]);
 
+  const streamdownContent =
+    isAnimating && streamdownLoadingFallback
+      ? streamdownLoadingFallback
+      : content;
+
   const reset = () => {
     // Stop current animation if running
     if (intervalRef.current) {
@@ -112,7 +119,9 @@ export const Section = ({
               With Streamdown
             </div>
             <div className="h-[400px] overflow-y-auto bg-background p-4">
-              <Streamdown {...streamdownProps}>{content}</Streamdown>
+              <Streamdown {...streamdownProps} isAnimating={isAnimating}>
+                {streamdownContent}
+              </Streamdown>
             </div>
           </div>
         </div>
