@@ -8,14 +8,18 @@ import {
   memo,
   Suspense,
   useContext,
+  useRef,
 } from "react";
 import type { BundledLanguage } from "shiki";
-import { StreamdownContext } from "../index";
+import type { EChartsType } from "echarts";
+import { StreamdownContext, type ControlsConfig } from "../index";
 import { CodeBlockCopyButton } from "./code-block/copy-button";
 import { CodeBlockDownloadButton } from "./code-block/download-button";
 import { CodeBlockSkeleton } from "./code-block/skeleton";
 import { ImageComponent } from "./image";
 import type { ExtraProps, Options } from "./markdown";
+import { EChartsDownloadDropdown } from "./echarts/download-button";
+import { EChartsFullscreenButton } from "./echarts/fullscreen-button";
 import { MermaidDownloadDropdown } from "./mermaid/download-button";
 import { MermaidFullscreenButton } from "./mermaid/fullscreen-button";
 import { Table } from "./table";
@@ -27,6 +31,9 @@ const CodeBlock = lazy(() =>
 );
 const Mermaid = lazy(() =>
   import("./mermaid").then((mod) => ({ default: mod.Mermaid }))
+);
+const ECharts = lazy(() =>
+  import("./echarts").then((mod) => ({ default: mod.ECharts }))
 );
 
 const LANGUAGE_REGEX = /language-([^\s]+)/;
@@ -76,16 +83,8 @@ function sameClassAndNode(
 }
 
 const shouldShowControls = (
-  config:
-    | boolean
-    | {
-        table?: boolean;
-        code?: boolean;
-        mermaid?:
-          | boolean
-          | { download?: boolean; copy?: boolean; fullscreen?: boolean };
-      },
-  type: "table" | "code" | "mermaid"
+  config: ControlsConfig,
+  type: "table" | "code" | "mermaid" | "echarts"
 ) => {
   if (typeof config === "boolean") {
     return config;
@@ -95,15 +94,7 @@ const shouldShowControls = (
 };
 
 const shouldShowMermaidControl = (
-  config:
-    | boolean
-    | {
-        table?: boolean;
-        code?: boolean;
-        mermaid?:
-          | boolean
-          | { download?: boolean; copy?: boolean; fullscreen?: boolean; panZoom?: boolean };
-      },
+  config: ControlsConfig,
   controlType: "download" | "copy" | "fullscreen" | "panZoom"
 ): boolean => {
   if (typeof config === "boolean") {
@@ -121,6 +112,27 @@ const shouldShowMermaidControl = (
   }
 
   return mermaidConfig[controlType] !== false;
+};
+
+const shouldShowEchartsControl = (
+  config: ControlsConfig,
+  controlType: "download" | "copy" | "fullscreen"
+): boolean => {
+  if (typeof config === "boolean") {
+    return config;
+  }
+
+  const echartsConfig = config.echarts;
+
+  if (echartsConfig === false) {
+    return false;
+  }
+
+  if (echartsConfig === true || echartsConfig === undefined) {
+    return true;
+  }
+
+  return echartsConfig[controlType] !== false;
 };
 
 type OlProps = WithNode<JSX.IntrinsicElements["ol"]>;
@@ -601,8 +613,9 @@ const CodeComponent = ({
 }: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> &
   ExtraProps) => {
   const inline = node?.position?.start.line === node?.position?.end.line;
-  const { mermaid: mermaidContext, controls: controlsConfig } =
+  const { mermaid: mermaidContext, echarts: echartsContext, controls: controlsConfig } =
     useContext(StreamdownContext);
+  const echartsInstanceRef = useRef<EChartsType | null>(null);
 
   if (inline) {
     return (
@@ -674,6 +687,57 @@ const CodeComponent = ({
             chart={code}
             config={mermaidContext?.config}
             showControls={showPanZoomControls}
+          />
+        </div>
+      </Suspense>
+    );
+  }
+
+  if (language === "echarts") {
+    const showEchartsControls = shouldShowControls(controlsConfig, "echarts");
+    const showDownload = shouldShowEchartsControl(controlsConfig, "download");
+    const showCopy = shouldShowEchartsControl(controlsConfig, "copy");
+    const showFullscreen = shouldShowEchartsControl(controlsConfig, "fullscreen");
+
+    return (
+      <Suspense fallback={<CodeBlockSkeleton />}>
+        <div
+          className={cn(
+            "group relative my-4 h-auto rounded-xl border p-4",
+            className
+          )}
+          data-streamdown="echarts-block"
+        >
+          {showEchartsControls &&
+            (showDownload || showCopy || showFullscreen) && (
+              <div className="flex items-center justify-end gap-2">
+                {showDownload && (
+                  <EChartsDownloadDropdown
+                    getChart={() => echartsInstanceRef.current}
+                    option={code}
+                  />
+                )}
+                {showCopy && <CodeBlockCopyButton code={code} />}
+                {showFullscreen && (
+                  <EChartsFullscreenButton
+                    errorComponent={echartsContext?.errorComponent}
+                    option={code}
+                    renderer={echartsContext?.renderer}
+                    setOptionOpts={echartsContext?.setOptionOpts}
+                    theme={echartsContext?.theme}
+                  />
+                )}
+              </div>
+            )}
+          <ECharts
+            errorComponent={echartsContext?.errorComponent}
+            option={code}
+            renderer={echartsContext?.renderer}
+            setOptionOpts={echartsContext?.setOptionOpts}
+            theme={echartsContext?.theme}
+            onReady={(chart) => {
+              echartsInstanceRef.current = chart;
+            }}
           />
         </div>
       </Suspense>

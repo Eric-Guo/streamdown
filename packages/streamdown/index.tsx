@@ -10,6 +10,7 @@ import {
   useState,
   useTransition,
 } from "react";
+import type { SetOptionOpts } from "echarts";
 import { harden } from "rehype-harden";
 import rehypeKatex from "rehype-katex";
 import rehypeRaw from "rehype-raw";
@@ -43,6 +44,13 @@ export type ControlsConfig =
             fullscreen?: boolean;
             panZoom?: boolean;
           };
+      echarts?:
+        | boolean
+        | {
+            download?: boolean;
+            copy?: boolean;
+            fullscreen?: boolean;
+          };
     };
 
 export type MermaidErrorComponentProps = {
@@ -56,6 +64,19 @@ export type MermaidOptions = {
   errorComponent?: React.ComponentType<MermaidErrorComponentProps>;
 };
 
+export type EChartsErrorComponentProps = {
+  error: string;
+  option: string;
+  retry: () => void;
+};
+
+export type EChartsOptions = {
+  renderer?: "canvas" | "svg";
+  theme?: string | Record<string, unknown>;
+  setOptionOpts?: SetOptionOpts;
+  errorComponent?: React.ComponentType<EChartsErrorComponentProps>;
+};
+
 export type StreamdownProps = Options & {
   mode?: "static" | "streaming";
   BlockComponent?: React.ComponentType<BlockProps>;
@@ -64,6 +85,7 @@ export type StreamdownProps = Options & {
   className?: string;
   shikiTheme?: [BundledTheme, BundledTheme];
   mermaid?: MermaidOptions;
+  echarts?: EChartsOptions;
   controls?: ControlsConfig;
   isAnimating?: boolean;
 };
@@ -101,6 +123,7 @@ export type StreamdownContextType = {
   isAnimating: boolean;
   mode: "static" | "streaming";
   mermaid?: MermaidOptions;
+  echarts?: EChartsOptions;
 };
 
 const defaultStreamdownContext: StreamdownContextType = {
@@ -109,6 +132,7 @@ const defaultStreamdownContext: StreamdownContextType = {
   isAnimating: false,
   mode: "streaming",
   mermaid: undefined,
+  echarts: undefined,
 };
 
 export const StreamdownContext = createContext<StreamdownContextType>(
@@ -199,6 +223,7 @@ export const Streamdown = memo(
     className,
     shikiTheme = defaultShikiTheme,
     mermaid,
+    echarts,
     controls = true,
     isAnimating = false,
     BlockComponent = Block,
@@ -247,8 +272,9 @@ export const Streamdown = memo(
         isAnimating,
         mode,
         mermaid,
+        echarts,
       }),
-      [shikiTheme, controls, isAnimating, mode, mermaid]
+      [shikiTheme, controls, isAnimating, mode, mermaid, echarts]
     );
 
     // Memoize merged components to avoid recreating on every render
