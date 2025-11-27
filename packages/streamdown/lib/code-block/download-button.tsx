@@ -77,6 +77,7 @@ const languageExtensionMap: Record<string, string> = {
   dotenv: "env",
   "dream-maker": "dm",
   edge: "edge",
+  echarts: "json",
   elisp: "el",
   elixir: "ex",
   elm: "elm",
