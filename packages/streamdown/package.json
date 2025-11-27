@@ -57,6 +57,7 @@
   },
   "dependencies": {
     "clsx": "^2.1.1",
+    "echarts": "^5.5.1",
     "hast": "^1.0.0",
     "hast-util-to-jsx-runtime": "^2.3.6",
     "html-url-attributes": "^3.0.1",

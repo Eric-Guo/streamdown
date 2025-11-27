@@ -331,6 +331,42 @@ describe("Markdown Components", () => {
       // The pre component returns its children directly
       expect(container.textContent).toBe("plain text code");
     });
+    it("should render echarts block with correct structure", async () => {
+      const Code = components.code;
+      if (!Code) {
+        throw new Error("Code component not found");
+      }
+      const { container } = render(
+        <Code
+          className="language-echarts"
+          node={
+            {
+              position: {
+                start: { line: 1, column: 1 },
+                end: { line: 2, column: 10 },
+              },
+            } as any
+          }
+        >
+          {"{ \"series\": [] }"}
+        </Code>
+      );
+
+      await waitFor(() => {
+        const echartsBlock = container.querySelector(
+          '[data-streamdown="echarts-block"]'
+        );
+        expect(echartsBlock).toBeTruthy();
+      });
+
+      const echartsBlock = container.querySelector(
+        '[data-streamdown="echarts-block"]'
+      );
+      expect(echartsBlock?.className).toContain("group");
+      expect(echartsBlock?.className).toContain("relative");
+      expect(echartsBlock?.className).toContain("rounded-xl");
+      expect(echartsBlock?.className).toContain("border");
+    });
     it("should render mermaid block with correct structure", async () => {
       const Code = components.code;
       if (!Code) {

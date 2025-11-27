@@ -78,6 +78,7 @@ const languageExtensionMap: Record<BundledLanguage, string> = {
   dotenv: "env",
   "dream-maker": "dm",
   edge: "edge",
+  echarts: "json",
   elisp: "el",
   elixir: "ex",
   elm: "elm",

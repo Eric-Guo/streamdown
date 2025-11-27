@@ -1,6 +1,24 @@
 import { render, waitFor } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 import { Streamdown } from "../index";
+
+beforeAll(() => {
+  // @ts-expect-error - jsdom doesn't implement canvas APIs
+  HTMLCanvasElement.prototype.getContext = vi.fn();
+});
+
+vi.mock("echarts", () => {
+  const chart = {
+    dispose: vi.fn(),
+    getDataURL: vi.fn().mockReturnValue("data:image/png;base64,"),
+    resize: vi.fn(),
+    setOption: vi.fn(),
+  };
+
+  return {
+    init: () => chart,
+  };
+});
 
 describe("controls prop", () => {
   const markdownWithTable = `
@@ -19,6 +37,12 @@ console.log('Hello World');
 \`\`\`mermaid
 graph TD
     A[Start] --> B[End]
+\`\`\`
+`;
+
+  const markdownWithEcharts = `
+\`\`\`echarts
+{ "series": [{ "type": "bar", "data": [1, 2, 3] }], "xAxis": {}, "yAxis": {} }
 \`\`\`
 `;
 
@@ -242,6 +266,37 @@ graph TD
       await waitFor(() => {
         const zoomInButton = container.querySelector('button[title="Zoom in"]');
         expect(zoomInButton).toBeTruthy();
+      });
+    });
+
+    it("should hide echarts controls when echarts is false", async () => {
+      const { container } = render(
+        <Streamdown controls={{ echarts: false }}>
+          {markdownWithEcharts}
+        </Streamdown>
+      );
+
+      await waitFor(() => {
+        const echartsBlock = container.querySelector(
+          '[data-streamdown="echarts-block"]'
+        );
+        expect(echartsBlock).toBeTruthy();
+      });
+
+      const buttons = container.querySelectorAll(
+        '[data-streamdown="echarts-block"] button'
+      );
+      expect(buttons.length).toBe(0);
+    });
+
+    it("should show echarts controls by default", async () => {
+      const { container } = render(<Streamdown>{markdownWithEcharts}</Streamdown>);
+
+      await waitFor(() => {
+        const buttons = container.querySelectorAll(
+          '[data-streamdown="echarts-block"] button'
+        );
+        expect(buttons.length).toBeGreaterThan(0);
       });
     });
   });
