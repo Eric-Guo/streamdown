@@ -53,6 +53,7 @@ export const EChartsDemo = () => (
       },
       controls: true,
     }}
+    streamdownLoadingFallback="Loading..."
     title="ECharts Code Blocks"
   />
 );
