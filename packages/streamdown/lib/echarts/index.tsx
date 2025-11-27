@@ -118,8 +118,16 @@ export const ECharts = ({
     }
 
     const updateDimensions = () => {
-      const hasSize =
-        container.clientWidth > 0 && container.clientHeight > 0;
+      const containerWidth = container.clientWidth;
+      let containerHeight = container.clientHeight;
+
+      // Provide a fallback height when no styles are loaded so the chart can mount
+      if (containerHeight === 0 && !container.style.minHeight) {
+        container.style.minHeight = "320px";
+        containerHeight = container.clientHeight;
+      }
+
+      const hasSize = containerWidth > 0 && containerHeight > 0;
 
       setHasDimensions(hasSize);
 
