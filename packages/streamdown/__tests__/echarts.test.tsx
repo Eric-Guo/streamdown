@@ -161,6 +161,47 @@ describe("ECharts", () => {
     });
   });
 
+  it("applies a fallback min-height when the container starts at zero height", async () => {
+    const originalClientHeight = Object.getOwnPropertyDescriptor(
+      HTMLElement.prototype,
+      "clientHeight"
+    );
+
+    Object.defineProperty(HTMLElement.prototype, "clientHeight", {
+      configurable: true,
+      get(this: HTMLElement) {
+        const parsed = Number.parseInt(this.style.minHeight || "0", 10);
+        return Number.isNaN(parsed) ? 0 : parsed;
+      },
+    });
+
+    clientHeight = 0;
+
+    try {
+      let container!: HTMLElement;
+
+      await act(async () => {
+        const result = renderWithContext(<ECharts option='{"series":[{}]}' />);
+        container = result.container;
+      });
+
+      const chartContainer = container.querySelector(
+        '[aria-label="ECharts chart"]'
+      ) as HTMLElement;
+
+      await waitFor(() => {
+        expect(chartContainer.style.minHeight).toBe("320px");
+        expect(loadEChartsMock).toHaveBeenCalled();
+        expect(initMock).toHaveBeenCalled();
+        expect(chartMock.setOption).toHaveBeenCalled();
+      });
+    } finally {
+      if (originalClientHeight) {
+        Object.defineProperty(HTMLElement.prototype, "clientHeight", originalClientHeight);
+      }
+    }
+  });
+
   it("accepts function values in option string", async () => {
     const option = `{ series: [{ itemStyle: { color: function () { return "#000"; } } }] }`;
     await act(async () => {
