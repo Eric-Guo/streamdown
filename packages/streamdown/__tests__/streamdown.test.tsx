@@ -211,6 +211,15 @@ And an incomplete [link
     expect(container.firstElementChild).toBeTruthy();
   });
 
+  it("should accept echarts config prop", () => {
+    const { container } = render(
+      <Streamdown echarts={{ renderer: "canvas" }}>Test content</Streamdown>
+    );
+
+    // Just verify it renders without error when echarts config is provided
+    expect(container.firstElementChild).toBeTruthy();
+  });
+
   it("should render without mermaid config", () => {
     const { container } = render(<Streamdown>Test content</Streamdown>);
 
