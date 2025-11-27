@@ -33,10 +33,15 @@ export const ECharts = ({
   const hasRenderedRef = useRef(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasDimensions, setHasDimensions] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     let disposed = false;
+
+    if (!hasDimensions) {
+      return;
+    }
 
     const renderChart = async () => {
       setError(null);
@@ -103,23 +108,40 @@ export const ECharts = ({
       chartRef.current = null;
       onReady?.(null);
     };
-  }, [option, renderer, theme, setOptionOpts, onReady, retryCount]);
+  }, [option, renderer, theme, setOptionOpts, onReady, retryCount, hasDimensions]);
 
   useEffect(() => {
     const container = containerRef.current;
 
-    if (!container || typeof ResizeObserver === "undefined") {
+    if (!container) {
       return;
     }
 
-    const observer = new ResizeObserver(() => {
-      chartRef.current?.resize();
-    });
+    const updateDimensions = () => {
+      const hasSize =
+        container.clientWidth > 0 && container.clientHeight > 0;
 
-    observer.observe(container);
+      setHasDimensions(hasSize);
+
+      if (hasSize) {
+        chartRef.current?.resize();
+      }
+    };
+
+    updateDimensions();
+
+    let observer: ResizeObserver | null = null;
+
+    if (typeof ResizeObserver !== "undefined") {
+      observer = new ResizeObserver(updateDimensions);
+      observer.observe(container);
+    }
+
+    window.addEventListener("resize", updateDimensions);
 
     return () => {
-      observer.disconnect();
+      observer?.disconnect();
+      window.removeEventListener("resize", updateDimensions);
     };
   }, []);
 
