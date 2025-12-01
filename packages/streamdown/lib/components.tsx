@@ -2,6 +2,7 @@ import {
   type DetailedHTMLProps,
   type HTMLAttributes,
   type ImgHTMLAttributes,
+  cloneElement,
   isValidElement,
   type JSX,
   lazy,
@@ -796,10 +797,13 @@ MemoCode.displayName = "MarkdownCode";
 
 const MemoImg = memo<
   DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement> &
-    ExtraProps
+    ExtraProps & { inline?: boolean }
 >(
   ImageComponent,
-  (p, n) => p.className === n.className && sameNodePosition(p.node, n.node)
+  (p, n) =>
+    p.className === n.className &&
+    p.inline === n.inline &&
+    sameNodePosition(p.node, n.node)
 );
 
 MemoImg.displayName = "MarkdownImg";
@@ -809,7 +813,7 @@ const MemoParagraph = memo<ParagraphProps>(
   ({ children, className, node, ...props }: ParagraphProps) => {
     // Check if the paragraph contains only an image element
     // If so, render the image directly without the <p> wrapper to avoid hydration errors
-    // (since our ImageComponent returns a <div>, which cannot be nested inside <p>)
+    // Otherwise, inline images are marked so they render with a span wrapper instead of a div.
 
     // Handle both array and single child cases
     const childArray = Array.isArray(children) ? children : [children];
@@ -819,19 +823,22 @@ const MemoParagraph = memo<ParagraphProps>(
       (child) => child !== null && child !== undefined && child !== ""
     );
 
+    const isImageElement = (child: React.ReactNode) =>
+      isValidElement(child) &&
+      (child.props as { node?: MarkdownNode }).node?.tagName === "img";
+
     // Check if there's exactly one child and it's an img element
-    if (
-      validChildren.length === 1 &&
-      isValidElement(validChildren[0]) &&
-      (validChildren[0].props as { node?: MarkdownNode }).node?.tagName ===
-        "img"
-    ) {
+    if (validChildren.length === 1 && isImageElement(validChildren[0])) {
       return <>{children}</>;
     }
 
+    const processedChildren = childArray.map((child) =>
+      isImageElement(child) ? cloneElement(child, { inline: true }) : child
+    );
+
     return (
       <p className={className} {...props}>
-        {children}
+        {processedChildren}
       </p>
     );
   },
