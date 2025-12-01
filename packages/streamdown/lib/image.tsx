@@ -9,11 +9,14 @@ type ImageComponentProps = DetailedHTMLProps<
   ImgHTMLAttributes<HTMLImageElement>,
   HTMLImageElement
 > &
-  ExtraProps;
+  ExtraProps & {
+    inline?: boolean;
+  };
 
 export const ImageComponent = ({
   node,
   className,
+  inline = false,
   src,
   alt,
   ...props
@@ -72,21 +75,33 @@ export const ImageComponent = ({
     return null;
   }
 
+  const Wrapper = inline ? "span" : "div";
+
   return (
-    <div
-      className="group relative my-4 inline-block"
+    <Wrapper
+      className={cn(
+        "group relative inline-block",
+        inline ? "mx-1 align-middle" : "my-4"
+      )}
       data-streamdown="image-wrapper"
     >
       {/** biome-ignore lint/performance/noImgElement: "streamdown is framework-agnostic" */}
       {/** biome-ignore lint/correctness/useImageSize: "unknown size" */}
       <img
         alt={alt}
-        className={cn("max-w-full rounded-lg", className)}
+        className={cn(
+          "max-w-full rounded-lg",
+          inline && "align-middle",
+          className
+        )}
         data-streamdown="image"
         src={src}
         {...props}
       />
-      <div className="pointer-events-none absolute inset-0 hidden rounded-lg bg-black/10 group-hover:block" />
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 hidden rounded-lg bg-black/10 group-hover:block"
+      />
       <button
         className={cn(
           "absolute right-2 bottom-2 flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border border-border bg-background/90 shadow-sm backdrop-blur-sm transition-all duration-200 hover:bg-background",
@@ -98,6 +113,6 @@ export const ImageComponent = ({
       >
         <DownloadIcon size={14} />
       </button>
-    </div>
+    </Wrapper>
   );
 };
