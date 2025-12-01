@@ -58,6 +58,12 @@ describe("Image hydration error fix", () => {
     // The image should still be rendered
     const img = container.querySelector('[data-streamdown="image"]');
     expect(img).toBeTruthy();
+
+    // The inline image wrapper should be inline-friendly to avoid hydration issues
+    const inlineWrapper = paragraph?.querySelector(
+      '[data-streamdown="image-wrapper"]'
+    );
+    expect(inlineWrapper?.tagName).toBe("SPAN");
   });
 
   it("should handle multiple standalone images", () => {
