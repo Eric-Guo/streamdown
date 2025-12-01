@@ -447,11 +447,13 @@ describe("Markdown Components", () => {
         return;
       }
       const { container } = render(
-        <THead node={null as any}>
-          <tr>
-            <th>Header</th>
-          </tr>
-        </THead>
+        <table>
+          <THead node={null as any}>
+            <tr>
+              <th>Header</th>
+            </tr>
+          </THead>
+        </table>
       );
       const thead = container.querySelector("thead");
       expect(thead).toBeTruthy();
@@ -464,11 +466,13 @@ describe("Markdown Components", () => {
         return;
       }
       const { container } = render(
-        <TBody node={null as any}>
-          <tr>
-            <td>Cell</td>
-          </tr>
-        </TBody>
+        <table>
+          <TBody node={null as any}>
+            <tr>
+              <td>Cell</td>
+            </tr>
+          </TBody>
+        </table>
       );
       const tbody = container.querySelector("tbody");
       expect(tbody).toBeTruthy();
@@ -483,9 +487,13 @@ describe("Markdown Components", () => {
         return;
       }
       const { container } = render(
-        <TR node={null as any}>
-          <td>Cell</td>
-        </TR>
+        <table>
+          <tbody>
+            <TR node={null as any}>
+              <td>Cell</td>
+            </TR>
+          </tbody>
+        </table>
       );
       const tr = container.querySelector("tr");
       expect(tr).toBeTruthy();
@@ -498,7 +506,15 @@ describe("Markdown Components", () => {
       if (!TH) {
         return;
       }
-      const { container } = render(<TH node={null as any}>Header</TH>);
+      const { container } = render(
+        <table>
+          <thead>
+            <tr>
+              <TH node={null as any}>Header</TH>
+            </tr>
+          </thead>
+        </table>
+      );
       const th = container.querySelector("th");
       expect(th).toBeTruthy();
       expect(th?.className).toContain("whitespace-nowrap");
@@ -514,7 +530,15 @@ describe("Markdown Components", () => {
       if (!TD) {
         return;
       }
-      const { container } = render(<TD node={null as any}>Cell</TD>);
+      const { container } = render(
+        <table>
+          <tbody>
+            <tr>
+              <TD node={null as any}>Cell</TD>
+            </tr>
+          </tbody>
+        </table>
+      );
       const td = container.querySelector("td");
       expect(td).toBeTruthy();
       expect(td?.className).toContain("px-4");
