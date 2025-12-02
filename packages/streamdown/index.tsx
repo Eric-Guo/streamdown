@@ -20,7 +20,7 @@ import remarkCjkFriendly from "remark-cjk-friendly";
 import remarkCjkFriendlyGfmStrikethrough from "remark-cjk-friendly-gfm-strikethrough";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
-import remend, { type RemendOptions } from "remend";
+import remend, { type RemendOptions } from "@mixtint/remend";
 import type { BundledTheme } from "shiki";
 import type { Pluggable } from "unified";
 import { components as defaultComponents } from "./lib/components";
@@ -36,7 +36,7 @@ const START_DOLLAR_PATTERN = /^\$[^$]/;
 const END_DOLLAR_PATTERN = /[^$]\$$/;
 
 export type { MermaidConfig } from "mermaid";
-export type { RemendOptions } from "remend";
+export type { RemendOptions } from "@mixtint/remend";
 export type { BundledLanguageName } from "./lib/code-block/bundled-languages";
 
 // biome-ignore lint/performance/noBarrelFile: "required"

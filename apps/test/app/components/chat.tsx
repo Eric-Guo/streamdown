@@ -12,7 +12,7 @@ import remarkCjkFriendly from "remark-cjk-friendly";
 import remarkCjkFriendlyGfmStrikethrough from "remark-cjk-friendly-gfm-strikethrough";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
-import { Streamdown } from "streamdown";
+import { Streamdown } from "@mixtint/streamdown";
 import { Button } from "@/components/ui/button";
 import {
   Combobox,

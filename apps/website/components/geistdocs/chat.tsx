@@ -9,7 +9,7 @@ import { Portal } from "radix-ui";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { harden } from "rehype-harden";
 import { toast } from "sonner";
-import { defaultRehypePlugins } from "streamdown";
+import { defaultRehypePlugins } from "@mixtint/streamdown";
 import type { MyUIMessage } from "@/app/api/chat/types";
 import {
   Conversation,

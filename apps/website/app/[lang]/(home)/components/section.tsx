@@ -4,7 +4,7 @@ import { RefreshCcwIcon } from "lucide-react";
 import { useInView } from "motion/react";
 import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { Streamdown, type StreamdownProps } from "streamdown";
+import { Streamdown, type StreamdownProps } from "@mixtint/streamdown";
 import { Button } from "@/components/ui/button";
 
 const DEFAULT_SPEED = 100;

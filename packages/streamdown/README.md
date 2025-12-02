@@ -41,7 +41,7 @@ Make sure the path matches the location of the `node_modules` folder in your pro
 You can use Streamdown in your React application like this:
 
 ```tsx
-import { Streamdown } from "streamdown";
+import { Streamdown } from "@mixtint/streamdown";
 
 export default function Page() {
   const markdown = "# Hello World\n\nThis is **streaming** markdown!";
