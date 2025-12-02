@@ -104,7 +104,7 @@ export const MermaidFullscreenButton = ({
       {isFullscreen && (
         // biome-ignore lint/a11y/useSemanticElements: "div is used as a backdrop overlay, not a button"
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-background/95 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-background/25 backdrop-blur-sm"
           onClick={handleToggle}
           onKeyDown={(e) => {
             if (e.key === "Escape") {
