@@ -1,7 +1,7 @@
 "use client";
 
 import { harden } from "rehype-harden";
-import { defaultRehypePlugins } from "streamdown";
+import { defaultRehypePlugins } from "@mixtint/streamdown";
 import { Section } from "./section";
 
 const markdown = `

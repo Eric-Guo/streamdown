@@ -119,7 +119,7 @@ Language models generate markdown naturally, often placing emphasis markers arou
 CJK support is enabled by default with no configuration required. The plugins are included in the default remark plugin list:
 
 ```tsx
-import { Streamdown } from "streamdown";
+import { Streamdown } from "@mixtint/streamdown";
 
 export default function Page() {
   return <Streamdown>{markdown}</Streamdown>;
@@ -131,7 +131,7 @@ export default function Page() {
 If you need to disable CJK support, you can override the default remark plugins:
 
 ```tsx
-import { Streamdown } from "streamdown";
+import { Streamdown } from "@mixtint/streamdown";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 

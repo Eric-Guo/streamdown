@@ -4,7 +4,7 @@ import type { UIMessage } from "ai";
 import { DefaultChatTransport } from "ai";
 import { Send } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Streamdown } from "streamdown";
+import { Streamdown } from "@mixtint/streamdown";
 
 import GuitarRecommendation from "@/components/example-GuitarRecommendation";
 
