@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@source "../node_modules/@mixtint/streamdown/dist/*.js";
 
 body {
   @apply m-0;
