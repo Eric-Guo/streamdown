@@ -41,7 +41,7 @@ npm i remend
 ## Usage
 
 ```typescript
-import remend from "remend";
+import remend from "@mixtint/remend";
 
 // During streaming
 const partialMarkdown = "This is **bold text";
@@ -59,7 +59,7 @@ const completed = remend(partialLink);
 Remend is a preprocessor that must be run on the raw Markdown string **before** passing it into the unified/remark processing pipeline:
 
 ```typescript
-import remend from "remend";
+import remend from "@mixtint/remend";
 import { unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";

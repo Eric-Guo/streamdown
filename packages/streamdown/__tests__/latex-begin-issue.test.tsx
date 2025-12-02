@@ -1,5 +1,5 @@
 import { render } from "@testing-library/react";
-import remend from "remend";
+import remend from "@mixtint/remend";
 import { describe, expect, it } from "vitest";
 import { Streamdown } from "../index";
 import { parseMarkdownIntoBlocks } from "../lib/parse-blocks";

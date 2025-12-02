@@ -1,4 +1,4 @@
-import { Streamdown } from "streamdown";
+import { Streamdown } from "@mixtint/streamdown";
 
 const markdown = `
 # Heading 1
