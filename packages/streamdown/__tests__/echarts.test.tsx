@@ -105,12 +105,19 @@ describe("ECharts", () => {
     mode: "streaming" as const,
   };
 
-  const renderWithContext = (ui: ReactElement) =>
-    render(
-      <StreamdownContext.Provider value={defaultContext}>
-        {ui}
-      </StreamdownContext.Provider>
-    );
+  const withContext = (
+    ui: ReactElement,
+    overrides?: Partial<typeof defaultContext>
+  ) => (
+    <StreamdownContext.Provider value={{ ...defaultContext, ...overrides }}>
+      {ui}
+    </StreamdownContext.Provider>
+  );
+
+  const renderWithContext = (
+    ui: ReactElement,
+    overrides?: Partial<typeof defaultContext>
+  ) => render(withContext(ui, overrides));
 
   it("renders and initializes chart", async () => {
     let container!: HTMLElement;
@@ -222,6 +229,24 @@ describe("ECharts", () => {
 
   it("shows error when option is invalid", async () => {
     const { container } = renderWithContext(<ECharts option="not valid {" />);
+
+    await waitFor(() => {
+      expect(container.textContent).toContain("ECharts Error");
+    });
+  });
+
+  it("keeps showing loading while streaming invalid options", async () => {
+    const option = "not valid {";
+    const { container, rerender } = renderWithContext(<ECharts option={option} />, {
+      isAnimating: true,
+    });
+
+    await waitFor(() => {
+      expect(container.textContent).toContain("Loading chart...");
+    });
+    expect(container.textContent).not.toContain("ECharts Error");
+
+    rerender(withContext(<ECharts option={option} />, { isAnimating: false }));
 
     await waitFor(() => {
       expect(container.textContent).toContain("ECharts Error");
