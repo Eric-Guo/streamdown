@@ -1,7 +1,8 @@
 import type { ComponentType } from "react";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import type { EChartsType, SetOptionOpts } from "echarts";
 import type { EChartsErrorComponentProps } from "../../index";
+import { StreamdownContext } from "../../index";
 import { cn } from "../utils";
 import { loadECharts, parseEChartsOption } from "./utils";
 
@@ -31,6 +32,7 @@ export const ECharts = ({
   const rendererRef = useRef<"canvas" | "svg" | undefined>(renderer);
   const themeRef = useRef<typeof theme>(theme);
   const hasRenderedRef = useRef(false);
+  const { isAnimating } = useContext(StreamdownContext);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [hasDimensions, setHasDimensions] = useState(false);
@@ -50,8 +52,12 @@ export const ECharts = ({
         setIsLoading(true);
       }
 
+      let parseCompleted = false;
+      let shouldKeepLoading = false;
+
       try {
         const parsedOption = parseEChartsOption(option);
+        parseCompleted = true;
         const echarts = await loadECharts();
         const container = containerRef.current;
 
@@ -86,7 +92,10 @@ export const ECharts = ({
         hasRenderedRef.current = true;
         onReady?.(chart);
       } catch (err) {
-        if (!hasRenderedRef.current && !disposed) {
+        const isParseError = !parseCompleted;
+        shouldKeepLoading = isParseError && isAnimating && !hasRenderedRef.current;
+
+        if (!shouldKeepLoading && !hasRenderedRef.current && !disposed) {
           const message =
             err instanceof Error
               ? err.message
@@ -94,7 +103,7 @@ export const ECharts = ({
           setError(message);
         }
       } finally {
-        if (!disposed) {
+        if (!disposed && !shouldKeepLoading) {
           setIsLoading(false);
         }
       }
@@ -108,7 +117,16 @@ export const ECharts = ({
       chartRef.current = null;
       onReady?.(null);
     };
-  }, [option, renderer, theme, setOptionOpts, onReady, retryCount, hasDimensions]);
+  }, [
+    option,
+    renderer,
+    theme,
+    setOptionOpts,
+    onReady,
+    retryCount,
+    hasDimensions,
+    isAnimating,
+  ]);
 
   useEffect(() => {
     const container = containerRef.current;
