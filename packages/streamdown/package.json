@@ -65,7 +65,7 @@
     "katex": "^0.16.25",
     "lucide-react": "^0.542.0",
     "marked": "^16.4.2",
-    "mermaid": "^11.12.1",
+    "mermaid": "^11.12.2",
     "rehype-harden": "^1.1.6",
     "rehype-katex": "^7.0.1",
     "rehype-raw": "^7.0.0",
