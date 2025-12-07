@@ -73,10 +73,14 @@ export const Folder: SidebarPageTreeComponents["Folder"] = ({
   item,
 }) => {
   const path = useTreePath();
+  const isActive = path.includes(item);
   const defaultOpen = item.defaultOpen ?? path.includes(item);
 
   return (
-    <SidebarFolder defaultOpen={defaultOpen}>
+    <SidebarFolder
+      active={isActive} 
+      defaultOpen={defaultOpen}
+    >
       {item.index ? (
         <SidebarFolderLink
           className="flex items-center gap-2 text-pretty py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground data-[active=true]:text-foreground [&_svg]:size-3.5"
